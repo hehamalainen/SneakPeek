@@ -8,13 +8,25 @@ For the Antigravity/Copilot test and additional harnesses, use the [harness conn
 
 The goal is supervision of hundreds or thousands of agents through mission-level evidence and a bounded queue of human decisions. This version has **not** been validated at that scale. Read the [scale architecture and current limits](docs/scaling.md), [security/privacy boundaries](SECURITY.md), and [contributor and adversarial-review guide](CONTRIBUTING.md).
 
+![SneakPeek on a Mac with Cove raising a paw and two otters resting together](docs/cove-mac-illustration.png)
+
+*AI-generated Mac mockup using the Cove character artwork, not an actual screenshot. Resting represents a clear attention queue, not a verified mission outcome.*
+
+## First visit?
+
+- **Try the local app:** build from source below, then choose **Try demo** before observing your own sessions. This is a development build, not a notarized installer.
+- **Try Cove:** choose **Appearance → Otter**, or build the [separate synthetic gesture demo](docs/cove-gestures-guide.txt). Demo apps and ZIPs are generated locally; they are not included in a source clone.
+- **Explore Taste:** the [human-action simulation](docs/human-action-simulation.md) demonstrates hunches, reviews, and resolutions. Production human authentication and automatic steering of workers are not available.
+
+Found a confusing signal, missing harness event, or setup problem? [Report a bug or give feedback](https://github.com/hehamalainen/SneakPeek/issues/new/choose) with a small synthetic example. Use [private reporting](https://github.com/hehamalainen/SneakPeek/security/advisories/new) for sensitive security findings.
+
 ![Synthetic native glance with unsigned local review](docs/unsigned-glance.png)
 
 ## Run
 
 ```sh
-git clone https://github.com/hehamalainen/SneakPeak.git
-cd SneakPeak
+git clone https://github.com/hehamalainen/SneakPeek.git
+cd SneakPeek
 ./scripts/test.sh
 ./scripts/build.sh
 ./scripts/run.sh

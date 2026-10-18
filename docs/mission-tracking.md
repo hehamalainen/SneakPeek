@@ -1,6 +1,8 @@
 # Mission checkpoints, decisions, and Taste
 
-This contract describes the local 0.3 implementation. Models and executable tests define the precise schema; this document explains the product decisions and boundaries that code alone does not capture.
+This document describes the unsigned Python mission-tracking research transport and its intended interactions. **It is not the current native app's acceptance authority.** Ordinary native builds do not authenticate outside reviews or Taste and count zero authenticated human acceptances. The native review, Taste-signing, and resolution interaction is available in the [separate human-action simulation](human-action-simulation.md), using synthetic data and a temporary software key. See [the current README](../README.md) for what you can try today.
+
+Models and executable tests define the precise schema; the sections below explain the underlying transport semantics. Any references to acceptance or verification below describe that research projection, not proof of a human identity or availability of production signing.
 
 ## Human workflow
 
@@ -84,6 +86,6 @@ Projection indexes workers, evidence, and judgments by mission/check, and the vi
 
 The local observer still polls and rewrites full snapshots, replays discovered logs on restart, and caps discovery at 100 logs per harness. Queue details are lazy-rendered, but mission selection and team detail are not fleet interfaces. Sidecar history has no retention policy or incremental durable reducer. See [scaling.md](scaling.md) for ingestion, incremental projections, pagination, event ordering, coverage reconciliation, and human-supervision measurements needed next.
 
-The Copilot adversarial-review fixes from [PR #1](https://github.com/hehamalainen/SneakPeak/pull/1) are reconciled into this feature branch. The live UI heartbeat, connected-source scope, source liveness, log rotation, malformed-input isolation, and mode-bound acknowledgement fixes are retained. Legacy bare verification and the baseline native persistence writer are replaced by the sidecar-based human action command; native tests exercise that actual transport. See [reliability-contracts.md](reliability-contracts.md).
+The Copilot adversarial-review fixes from [PR #1](https://github.com/hehamalainen/SneakPeek/pull/1) are reconciled into this feature branch. The live UI heartbeat, connected-source scope, source liveness, log rotation, malformed-input isolation, and mode-bound acknowledgement fixes are retained. Legacy bare verification and the baseline native persistence writer are replaced by the sidecar-based human action command; native tests exercise that actual transport. See [reliability-contracts.md](reliability-contracts.md).
 
 The [Claude review follow-up](claude-review.md) addresses default permissions, source reconciliation, runtime placement, inferred goals and stale course claims while retaining the remaining same-writer trust boundary. Permissions stay in the host UI by default; `--trusted-local-inline` explicitly opts into unsigned replies. Goal/fingerprint binding protects against stale or accidental reuse; it does not authenticate who wrote a record. Human-action signing, runtime placement, and authenticated source precedence must be evaluated together, including whether a forged full feed can still impersonate an attestation. No signing or identity guarantee is asserted by this feature.

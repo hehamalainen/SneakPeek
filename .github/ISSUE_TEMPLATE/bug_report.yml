@@ -1,0 +1,42 @@
+name: Bug or setup problem
+description: Report a reproducible problem with the local prototype.
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying SneakPeek. Please use synthetic examples and remove private information from screenshots. Do not include tokens, raw session logs, private prompts, or real approval inputs. Report sensitive security issues privately through the Security tab.
+  - type: input
+    id: environment
+    attributes:
+      label: Mac and version
+      description: macOS version, Apple silicon or Intel, and SneakPeek version or commit.
+    validations:
+      required: true
+  - type: dropdown
+    id: harness
+    attributes:
+      label: Harness or feature
+      options:
+        - Codex
+        - Claude Code
+        - Antigravity
+        - GitHub Copilot
+        - Other harness
+        - Cove or native interface
+        - Human-action simulation
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: A small synthetic example, including whether this was Live, Demo, or a separate simulation.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What did you expect, and what happened?
+    validations:
+      required: true
