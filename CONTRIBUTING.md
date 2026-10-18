@@ -7,8 +7,8 @@ SneakPeek is a local macOS research prototype. Changes should preserve its centr
 Requirements: macOS 14 or later, a Swift 6 toolchain (Xcode or Apple Command Line Tools), Python 3.9 or later, and zsh. There are no third-party runtime dependencies. The package uses SwiftPM; Python adapters use the standard library. Provider CLIs are optional unless testing a real integration.
 
 ```sh
-git clone https://github.com/hehamalainen/SneakPeak.git
-cd SneakPeak
+git clone https://github.com/hehamalainen/SneakPeek.git
+cd SneakPeek
 ./scripts/test.sh
 ./scripts/build.sh
 ./scripts/run.sh --demo --expanded
@@ -28,6 +28,16 @@ Tests use synthetic sessions and mock hosts. They do not call a model, connect a
 Keep runtime files, credentials, real transcripts, compiled apps, and screenshots containing live session details out of commits and reports. Share minimal synthetic fixtures for reproduction. New adapters must exclude private reasoning, treat source logs as untrusted data, and describe whether they support observation, handoff, or authoritative approvals.
 
 Run `./scripts/test.sh` and `./scripts/build.sh` before proposing changes. GitHub CI repeats those checks on macOS and tests the Python bridge on Python 3.9 and 3.14. CI does not launch the GUI or validate real providers.
+
+## Changes to main
+
+`main` is protected by the [Protect main ruleset](https://github.com/hehamalainen/SneakPeek/rules/25340976). Use a feature branch and pull request; direct pushes, force pushes, and deletion of `main` are blocked. All review conversations must be resolved. The branch must be up to date and these GitHub Actions checks must pass:
+
+- `Native tests and app build`
+- `Python bridge (3.9)`
+- `Python bridge (3.14)`
+
+Required reviewer approvals are zero for the current solo-maintainer workflow. This still requires a pull request and passing checks, including for administrators; the ruleset has no bypass actors. When renaming CI jobs, update the required check contexts with the repository maintainer so merges do not wait on a check that no longer runs. Auto-merge, when requested, follows the same checks.
 
 ## Adversarial review
 

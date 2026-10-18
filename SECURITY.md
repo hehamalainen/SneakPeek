@@ -56,4 +56,4 @@ Known gaps include no authenticated human-action or projection transport, no aut
 
 ## Reporting
 
-For non-sensitive defects, open a GitHub issue with a synthetic reproduction. Do not publish credentials, real approval payloads, private sessions, or exploit details involving a currently exposed installation. For a sensitive report, use the repository's private vulnerability reporting facility if enabled; otherwise contact the repository owner privately to arrange a secure channel before sharing details.
+For non-sensitive defects, [open a GitHub issue](https://github.com/hehamalainen/SneakPeek/issues/new/choose) with a synthetic reproduction. Do not publish credentials, real approval payloads, private sessions, or exploit details involving a currently exposed installation. For a sensitive report, use [GitHub's private vulnerability reporting](https://github.com/hehamalainen/SneakPeek/security/advisories/new), which is enabled for this repository. If that facility is unavailable, contact the repository owner privately to arrange a secure channel before sharing details.

@@ -1,0 +1,17 @@
+name: Feedback or idea
+description: Tell us where the prototype helps or adds confusion.
+body:
+  - type: textarea
+    id: situation
+    attributes:
+      label: What were you trying to understand or decide?
+      description: Describe the workflow without sharing private prompts or session data.
+    validations:
+      required: true
+  - type: textarea
+    id: feedback
+    attributes:
+      label: What helped, confused you, or should change?
+      description: Especially useful are missed decisions, noisy signals, unclear evidence, and Taste or Cove interactions.
+    validations:
+      required: true
