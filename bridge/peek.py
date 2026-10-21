@@ -5,6 +5,7 @@ import argparse
 import fcntl
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import signal
@@ -186,6 +187,16 @@ def merge_feed(missions, agents, directory: Path, harnesses=None, recent_hours=2
             "warnings": warnings}
 
 
+def positive_seconds(value):
+    try:
+        seconds = float(value)
+    except ValueError:
+        seconds = math.nan
+    if not math.isfinite(seconds) or seconds <= 0:
+        raise argparse.ArgumentTypeError(f"must be a finite positive number of seconds, got {value!r}")
+    return seconds
+
+
 def watch(args):
     path = Path(args.state).resolve()
     directory = path.parent
@@ -210,7 +221,7 @@ def watch(args):
         atomic_json(directory / "demo-state.json", project_missions(example, directory))
         if args.once:
             break
-        time.sleep(1)
+        time.sleep(getattr(args, "interval", 1.0))
 
 
 def register_command(args):
@@ -320,6 +331,7 @@ def main():
     monitor.add_argument("--home", default=str(Path.home()))
     monitor.add_argument("--project", help="Optional exact project directory scope")
     monitor.add_argument("--once", action="store_true")
+    monitor.add_argument("--interval", type=positive_seconds, default=1.0, help="Polling interval in seconds (default: 1.0)")
     monitor.add_argument("--owner-pid", type=int, default=0, help="Stop when the owning app process exits")
     monitor.set_defaults(handler=watch)
     progress = sub.add_parser("checkpoint")
