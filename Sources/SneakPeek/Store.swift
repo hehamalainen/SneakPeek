@@ -81,12 +81,17 @@ import SwiftUI
     }
     var mission: Mission? { missions.first { $0.id == selectedMissionId } ?? missions.first }
     var agents: [Agent] {
-        visibleAgents.filter { $0.missionId == mission?.id }.sorted {
+        // Resolve the filtered mission once, rather than once per agent.
+        let missionID = mission?.id
+        return visibleAgents.filter { $0.missionId == missionID }.sorted {
             if $0.needsHuman(at: now) != $1.needsHuman(at: now) { return $0.needsHuman(at: now) }
             return $0.lastActivity > $1.lastActivity
         }
     }
-    var selectedAgent: Agent? { agents.first { $0.id == selectedAgentId } ?? agents.first { $0.needsHuman(at: now) } }
+    var selectedAgent: Agent? {
+        let members = agents
+        return members.first { $0.id == selectedAgentId } ?? members.first { $0.needsHuman(at: now) }
+    }
     var queue: [QueueItem] { feed.queue ?? [] }
     var visibleQueue: [QueueItem] {
         if providerFilter == "All sources" { return queue }

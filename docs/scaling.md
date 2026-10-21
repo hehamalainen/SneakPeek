@@ -2,6 +2,8 @@
 
 The product goal is to free human attention while preserving the ability to inspect what autonomous work is accomplishing. Hundreds or thousands of agents are a design target, not a capacity claim for this prototype. No fleet load validation has been performed.
 
+A [local UI performance investigation](performance.md) reproduces and fixes a full-core team-view bottleneck using synthetic feeds. Its short, observer-free UI measurements are not fleet load validation.
+
 ## Current implementation and limits
 
 The native app supervises a local observer using file-based state. Each harness discovery scan keeps the 100 most recently modified eligible log files. That is a limit on logs, not an agent limit: one log can contain several subagents or generic sessions. Older eligible logs are omitted. The harness manager reports the omitted count, and the live feed warns when coverage is incomplete. Project filtering happens after discovery, so a busy harness can crowd out logs from the selected project.
