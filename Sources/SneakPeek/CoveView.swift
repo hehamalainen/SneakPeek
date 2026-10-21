@@ -157,7 +157,7 @@ struct CoveRaft: View {
                     .padding(.vertical, 12)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(alignment: .top, spacing: 18) {
+                    LazyHStack(alignment: .top, spacing: 18) {
                         ForEach(groups) { group in
                             CoveRaftGroupView(group: group, store: store, replay: replay)
                         }

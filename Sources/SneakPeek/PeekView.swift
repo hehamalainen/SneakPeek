@@ -137,14 +137,11 @@ struct PeekView: View {
                 }.padding(.top, 18).padding(.bottom, 12)
 
                 ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 9) {
+                    LazyVStack(alignment: .leading, spacing: 9) {
                         if pane == "checks" { checkpointView(mission) }
                         else if pane == "team" {
                             if store.companionMode == .otter { RaftView(store: store) }
-                            ForEach(store.agents) { agent in
-                                agentCard(agent)
-                                if store.selectedAgent?.id == agent.id { detail(agent) }
-                            }
+                            teamCards
                         } else {
                             ForEach(Array(store.visibleQueue.prefix(5))) { item in QueueRow(item: item) { store.onQueue?(item) } }
                             if store.visibleQueue.isEmpty {
@@ -231,8 +228,22 @@ struct PeekView: View {
         .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.white.opacity(0.07)))
     }
 
-    private func agentCard(_ agent: Agent) -> some View {
-        let selected = store.selectedAgent?.id == agent.id
+    @ViewBuilder private var teamCards: some View {
+        let members = store.agents
+        // Selecting an agent sorts the mission's team. Do it once per refresh,
+        // not twice for every row, including rows outside the viewport.
+        let selectedID = store.selectedAgent?.id
+        ForEach(members) { agent in
+            // One child per agent lets the lazy stack skip off-screen rows,
+            // including the optional detail belonging to the selected card.
+            VStack(alignment: .leading, spacing: 9) {
+                agentCard(agent, selected: selectedID == agent.id)
+                if selectedID == agent.id { detail(agent) }
+            }
+        }
+    }
+
+    private func agentCard(_ agent: Agent, selected: Bool) -> some View {
         return Button {
             store.selectedAgentId = selected && !agent.needsHuman(at: store.now) ? nil : agent.id
         } label: {
