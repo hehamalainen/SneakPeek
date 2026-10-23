@@ -21,6 +21,7 @@ from claude_hook import handle as hook_handle
 def handle(event, state, timeout=120):
     return hook_handle(event, state, timeout, trusted_local_inline=True)
 import codex_runner
+import peek
 
 
 class ReviewRegressions(unittest.TestCase):
@@ -189,6 +190,67 @@ class ReviewRegressions(unittest.TestCase):
             checkpoint(SimpleNamespace(state=str(self.state), agent="demo-bridge", checkpoint="bridge", evidence="Old-goal evidence", next="Review", trajectory="onCourse"))
         self.assertEqual(json.loads(path.read_text()), latest)
         self.assertFalse((self.root / "progress").exists())
+
+
+class WatchInterval(unittest.TestCase):
+    """Synthetic coverage for the configurable watch polling interval."""
+    class Stop(Exception):
+        pass
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+        self.state = self.root / "state.json"
+
+    def tearDown(self): self.temp.cleanup()
+
+    def parse(self, *extra):
+        captured = []
+        with patch.object(sys, "argv", ["peek.py", "watch", "--state", str(self.state), *extra]), patch.object(peek, "watch", captured.append):
+            peek.main()
+        return captured[0]
+
+    def run_watch(self, **overrides):
+        values = dict(state=str(self.state), home=str(self.root / "home"), project=None, once=False, owner_pid=0)
+        values.update(overrides)
+        with patch.object(peek.signal, "signal"), patch.object(peek.time, "sleep", side_effect=self.Stop) as sleep:
+            try:
+                watch(SimpleNamespace(**values))
+            except self.Stop:
+                pass
+        return sleep
+
+    def test_interval_defaults_to_one_second(self):
+        self.assertEqual(self.parse().interval, 1.0)
+
+    def test_interval_accepts_custom_positive_seconds(self):
+        self.assertEqual(self.parse("--interval", "0.25").interval, 0.25)
+        self.assertEqual(self.parse("--interval=3").interval, 3.0)
+
+    def test_invalid_interval_is_rejected_before_observing_or_writing_state(self):
+        for value in ("0", "-0.0", "-1", "nan", "NaN", "inf", "-inf", "Infinity", "1e309", "abc", ""):
+            with self.subTest(value=value):
+                stderr = io.StringIO()
+                with patch.object(sys, "argv", ["peek.py", "watch", "--state", str(self.state), f"--interval={value}"]), \
+                        patch.object(peek, "Observer", side_effect=AssertionError("Must not start the observer")), \
+                        patch.object(sys, "stderr", stderr), self.assertRaises(SystemExit) as raised:
+                    peek.main()
+                self.assertEqual(raised.exception.code, 2)
+                self.assertIn("argument --interval", stderr.getvalue())
+                self.assertIn("positive", stderr.getvalue())
+                self.assertFalse(self.state.exists())
+
+    def test_watch_loop_sleeps_for_selected_interval(self):
+        sleep = self.run_watch(interval=0.25)
+        sleep.assert_called_once_with(0.25)
+        self.assertTrue(self.state.exists())
+
+    def test_watch_without_interval_attribute_keeps_one_second_poll(self):
+        self.run_watch().assert_called_once_with(1.0)
+
+    def test_once_writes_state_without_sleeping(self):
+        self.run_watch(once=True, interval=5.0).assert_not_called()
+        self.assertTrue(self.state.exists())
 
 
 if __name__ == "__main__": unittest.main()
